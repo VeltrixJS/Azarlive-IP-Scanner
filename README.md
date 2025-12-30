@@ -1,6 +1,6 @@
 # 🔍 Azar IP Scanner
 
-Un script puissant pour détecter et tracker les adresses IP en temps réel sur [Azar](https://azarlive.com/) Live avec géolocalisation automatique.
+Un script puissant pour analyser les adresses IP en temps réel sur [Azar](https://azarlive.com/) Live avec géolocalisation automatique.
 
 ---
 
