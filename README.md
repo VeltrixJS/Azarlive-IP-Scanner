@@ -1,6 +1,11 @@
 > 🔗 Official repository: https://github.com/VeltrixJS/Azarlive-IP-Scanner
-
 # 🔍 Azar IP Scanner
+
+[![GitHub stars](https://img.shields.io/github/stars/VeltrixJS/Azarlive-IP-Scanner?style=social)](https://github.com/VeltrixJS/Azarlive-IP-Scanner/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/VeltrixJS/Azarlive-IP-Scanner?style=social)](https://github.com/VeltrixJS/Azarlive-IP-Scanner/network/members)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-2.9-green.svg)](https://github.com/VeltrixJS/Azarlive-IP-Scanner/releases)
+![Visitors](https://visitor-badge.laobi.icu/badge?page_id=VeltrixJS.Azarlive-IP-Scanner)
 
 Un script puissant pour analyser les adresses IP en temps réel sur [Azar](https://azarlive.com/) Live avec géolocalisation automatique.
 
