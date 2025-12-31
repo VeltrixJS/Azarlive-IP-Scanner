@@ -1,4 +1,4 @@
-> 🔗 Official repository: https://github.com/VeltrixJS/Azarlive-IP-Scanner/tree/main
+> 🔗 Official repository: https://github.com/VeltrixJS/Azarlive-IP-Scanner
 
 # 🔍 Azar IP Scanner
 
