@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Azar IP Scanner
 // @namespace    https://github.com/VeltrixJS/azar-ip-sniffer
-// @version      2.9
-// @description  IP Tracker for Azar with geolocation (Unlimited API)
+// @version      3.0
+// @description  IP Tracker for Azar with geolocation support
 // @author       VeltrixJS
 // @match        https://azarlive.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=azarlive.com
@@ -12,6 +12,10 @@
 (function () {
     'use strict';
     
+    
+    const API_KEY = ''; // Leave empty to use free APIs
+    
+    
     const COLORS = {
         green: '#51f59b',
         dark: '#121212',
@@ -20,7 +24,12 @@
         border: '#222'
     };
 
-    const APIS = [
+    const APIS = API_KEY ? [
+        { url: (ip) => `https://api.ipgeolocation.io/ipgeo?apiKey=${API_KEY}&ip=${ip}`, parse: d => ({ city: d.city, region: d.state_prov, postal: d.zipcode, country: d.country_name, isp: d.isp }) },
+        { url: (ip) => `http://ip-api.com/json/${ip}`, parse: d => ({ city: d.city, region: d.regionName, postal: d.zip, country: d.country, isp: d.isp }) },
+        { url: (ip) => `https://ipapi.co/${ip}/json/`, parse: d => ({ city: d.city, region: d.region, postal: d.postal, country: d.country_name, isp: d.org }) },
+        { url: (ip) => `https://ipwho.is/${ip}`, parse: d => ({ city: d.city, region: d.region, postal: d.postal, country: d.country, isp: d.connection?.isp }) }
+    ] : [
         { url: (ip) => `http://ip-api.com/json/${ip}`, parse: d => ({ city: d.city, region: d.regionName, postal: d.zip, country: d.country, isp: d.isp }) },
         { url: (ip) => `https://ipapi.co/${ip}/json/`, parse: d => ({ city: d.city, region: d.region, postal: d.postal, country: d.country_name, isp: d.org }) },
         { url: (ip) => `https://ipwho.is/${ip}`, parse: d => ({ city: d.city, region: d.region, postal: d.postal, country: d.country, isp: d.connection?.isp }) }
@@ -177,7 +186,7 @@
             try {
                 const res = await fetch(api.url(ip));
                 const data = await res.json();
-                if (data && !data.error && data.status !== 'fail') {
+                if (data && !data.error && data.status !== 'fail' && !data.message) {
                     const parsed = api.parse(data);
                     return { ...parsed, isp: parsed.isp || 'N/A' };
                 }
