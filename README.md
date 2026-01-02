@@ -79,7 +79,7 @@ Un script puissant pour analyser les adresses IP en temps réel sur [Azar](https
 
 ## 🔑 Ajouter une clé API (optionnel)
 
-Pour des limites plus élevées, modifiez la ligne 12 du script :
+Pour des limites plus élevées, modifiez la ligne 15 du script :
 ```javascript
 const API_KEY = 'VOTRE_CLE_API_ICI';
 ```
