@@ -121,6 +121,7 @@ Ce projet est fourni **à des fins éducatives et de recherche uniquement**.
 - L’utilisation peut être contraire aux conditions d’utilisation d’Azar.
 - Respectez les lois locales sur la vie privée et le consentement.
 
+‎ ‎ 
 <div align="center">
 Made with ❤️ by VeltrixJS
 ⭐ Star si vous aimez !
