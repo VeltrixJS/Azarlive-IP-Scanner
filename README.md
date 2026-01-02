@@ -10,8 +10,10 @@ Un script puissant pour analyser les adresses IP en temps réel sur [Azar](https
 
 - 🎯 Détection automatique d'IP via WebRTC
 - 🌍 Géolocalisation (Ville, Département, ISP)
+- 🚨 Détection VPN/Proxy
 - 🗺️ Localisation Google Maps
 - 📺 Mode double écran
+- 📋 Copie instantanée d'IP
 
 ---
 
@@ -57,6 +59,33 @@ Un script puissant pour analyser les adresses IP en temps réel sur [Azar](https
 > ⚠️ **Note :** Avec cette méthode, le script se désactive au rechargement de la page. Utilisez Tampermonkey pour une installation permanente.
 
 ---
+## 🔧 APIs utilisées
+
+### Sans clé API (mode gratuit) - 3 APIs :
+
+1. **ip-api.com** → 45 req/min, géolocalisation + ISP
+2. **ipwhois.app** → 10k/mois, détection VPN/Proxy
+3. **freeipapi.com** → Pas de limite stricte, détection Proxy
+
+### Avec clé API (optionnel) - 4 APIs :
+
+1. **ipgeolocation.io** → Votre clé API, géolocalisation premium
+2. **ip-api.com** → Fallback rapide
+3. **ipwhois.app** → Détection VPN/Proxy
+
+> **💡 Système de fallback** : Si une API ne répond pas → passe automatiquement à la suivante.
+
+---
+
+## 🔑 Ajouter une clé API (optionnel)
+
+Pour des limites plus élevées, modifiez la ligne 12 du script :
+```javascript
+const API_KEY = 'VOTRE_CLE_API_ICI';
+```
+
+📝 **Obtenez une clé gratuite** : [ipgeolocation.io/signup](https://ipgeolocation.io/signup.html)
+
 
 ## 📖 Utilisation
 
@@ -92,7 +121,10 @@ Ce projet est fourni **à des fins éducatives et de recherche uniquement**.
 - L’utilisation peut être contraire aux conditions d’utilisation d’Azar.
 - Respectez les lois locales sur la vie privée et le consentement.
 
-
+<div align="center">
+Made with ❤️ by VeltrixJS
+⭐ Star si vous aimez !
+</div>
 
 
 
