@@ -1,5 +1,13 @@
 > 🔗 Official repository: https://github.com/VeltrixJS/Azarlive-IP-Scanner
 
+<div align="center">
+
+### 🎥 [VOIR LE TUTORIEL VIDÉO](https://veltrixjs.github.io/Azarlive-IP-Scanner/)
+
+</div>
+
+---
+
 # 🔍 Azar IP Scanner
 
 Un script puissant pour analyser les adresses IP en temps réel sur [Azar](https://azarlive.com/) Live avec géolocalisation automatique.
