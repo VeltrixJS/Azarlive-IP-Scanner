@@ -14,8 +14,22 @@
     
     const COLORS = { green: '#51f59b', dark: '#121212', white: '#fff', grey: '#1c1c1c', borderColor: '#222' };
 
-    // APIs mises à jour et fonctionnelles
+    // Créez un compte sur : https://ipgeolocation.io/
+    const API_KEY = '';
+
     const APIS = [
+        // IPGeolocation.io — prioritaire si clé API renseignée (150 000 req/mois gratuit)
+        ...(API_KEY ? [{
+            url: (ip) => `https://api.ipgeolocation.io/ipgeo?apiKey=${API_KEY}&ip=${ip}`,
+            parse: d => ({
+                city: d.city || 'Unknown',
+                region: d.state_prov || 'Unknown',
+                postal: d.zipcode || '',
+                country: d.country_name || 'Unknown',
+                isp: d.isp || d.organization || 'N/A',
+                vpn: false
+            })
+        }] : []),
         {
             url: (ip) => `https://ipapi.co/${ip}/json/`,
             parse: d => ({
