@@ -269,6 +269,8 @@
     };
 
     let detectedIP = null;
+    let lastLookupAt = 0;
+    const LOOKUP_COOLDOWN_MS = 5000;
     window.oRTCPeerConnection = window.oRTCPeerConnection || window.RTCPeerConnection;
 
     window.RTCPeerConnection = function (...args) {
@@ -280,7 +282,9 @@
                 const fields = iceCandidate.candidate.split(' ');
                 if (fields[7] === 'srflx') {
                     const ip = fields[4];
-                    if (detectedIP !== ip) {
+                    const now = Date.now();
+                    if (detectedIP !== ip && (now - lastLookupAt) >= LOOKUP_COOLDOWN_MS) {
+                        lastLookupAt = now;
                         detectedIP = ip;
                         const ipAddresses = document.getElementById('ip-addresses');
                         ipAddresses.innerHTML = '<div style="color:#51f59b;text-align:center;padding:10px;">Chargement des informations...</div>';
