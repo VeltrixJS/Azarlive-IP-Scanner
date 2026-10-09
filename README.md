@@ -16,6 +16,18 @@ Un script puissant pour analyser les adresses IP en temps réel sur [Azar](https
 
 ---
 
+<div align="center">
+
+###  Installation 
+
+[![Installer le script](https://img.shields.io/badge/INSTALLER-Azar_IP_Scanner-51f59b?style=for-the-badge&logo=tampermonkey&logoColor=black)](https://raw.githubusercontent.com/VeltrixJS/Azarlive-IP-Scanner/main/ip-scanner.user.js)
+
+*Nécessite [Tampermonkey](https://www.tampermonkey.net/) installé dans ton navigateur.*
+
+</div>
+
+---
+
 ## ✨ Fonctionnalités
 
 - 🎯 Détection automatique d'IP via WebRTC (hook `RTCPeerConnection`)
@@ -30,26 +42,34 @@ Un script puissant pour analyser les adresses IP en temps réel sur [Azar](https
 - 📋 Copie instantanée d'IP
 - 🔒 Filtrage strict des IPs privées / réservées (RFC 1918, CGNAT, link-local, loopback, multicast…)
 - 🧬 Support IPv4 **et** IPv6
+- 🛡️ **Rate limiting** (60 lookups/min) + déduplication des IPs en cours de traitement
 
 ---
 
 ## 🚀 Installation
 
-### Méthode 1 : Avec Tampermonkey (Recommandé)
+### Prérequis : installer Tampermonkey
 
-1. **Installer Tampermonkey**
-   - [Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
-   - [Firefox](https://addons.mozilla.org/fr/firefox/addon/tampermonkey/)
-   - [Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
+- [Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
+- [Firefox](https://addons.mozilla.org/fr/firefox/addon/tampermonkey/)
+- [Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
 
-2. **Créer le script**
-   - Cliquez sur l'icône Tampermonkey → "Créer un nouveau script"
-   - Supprimez tout le contenu par défaut
-   - Copiez-collez le contenu de `ip-scanner.js` (le fichier fourni)
-   - Sauvegardez (Ctrl+S ou Cmd+S)
+### Installation du script
 
-3. **Activer le script**
-   - Ouvre la page des extensions Chrome en copiant cette adresse dans ta barre de navigation :
+**Option A — 1 clic (recommandé)** :
+
+👉 [**Cliquer ici pour installer**](https://raw.githubusercontent.com/VeltrixJS/Azarlive-IP-Scanner/main/ip-scanner.user.js) → Tampermonkey ouvre une page d'installation → clique sur **Installer**.
+
+**Option B — Manuellement** :
+
+1. Clique sur l'icône Tampermonkey → **"Créer un nouveau script"**
+2. Supprime tout le contenu par défaut
+3. Copie-colle le contenu de [`ip-scanner.user.js`](https://raw.githubusercontent.com/VeltrixJS/Azarlive-IP-Scanner/main/ip-scanner.user.js)
+4. Sauvegarde (**Ctrl+S** ou **Cmd+S**)
+
+### Vérification (Chrome)
+
+Ouvre la page des extensions :
 ```
      chrome://extensions/?id=dhdgffkkebhmkfjojejmpbldmpobfkfo
 ```
@@ -62,19 +82,6 @@ Un script puissant pour analyser les adresses IP en temps réel sur [Azar](https
    - Rendez-vous sur [azarlive.com](https://azarlive.com/)
    - Le panneau apparaît automatiquement en haut à droite
    - Lancez un appel → L'IP s'affiche automatiquement
-
-### Méthode 2 : Console du navigateur
-
-1. Ouvrez [azarlive.com](https://azarlive.com/)
-2. Ouvrez la console (**F12** → **Console**)
-3. Copiez le contenu de `ip-scanner.js`
-4. Collez dans la console
-5. **⚠️ Si erreur au collage :** Tapez `allow pasting` directement dans la console, puis recollez le script
-6. Appuyez sur **Entrée**
-
-> ⚠️ **Note :** Avec cette méthode, le script se désactive au rechargement de la page. Utilisez Tampermonkey pour une installation permanente.
-
----
 
 ## 🔧 APIs utilisées
 
