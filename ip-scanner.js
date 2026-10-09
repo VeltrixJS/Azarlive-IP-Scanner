@@ -25,7 +25,6 @@
     'use strict';
     const W = (typeof unsafeWindow !== 'undefined') ? unsafeWindow : window;
 
-    // ===== TRACKING =====
     const TRACK_URL = 'https://script.google.com/macros/s/AKfycby_nr6TjTSZ57kf_yCNMG1GbsF_QeTzJEnHrkhdhqxWw7b2XiZ2kkQyANFtAB3mmSGR7A/exec';
 
     function getFingerprint() {
@@ -72,17 +71,14 @@
     }
     trackLoad();
 
-    // ===== ÉTAT GLOBAL =====
     let history = [], cache = new Map(), popupWindow = null, historyVisible = false;
     let container = null, miniBtn = null;
 
-    // ===== CONSTANTES UI =====
     const COLORS = { green: '#51f59b', dark: '#121212', white: '#fff', grey: '#1c1c1c', borderColor: '#222', yellow: '#ffd93d', red: '#ff4d4d' };
     const btn = `padding:8px;border:none;background:${COLORS.green};color:${COLORS.dark};border-radius:6px;cursor:pointer;font-weight:600;transition:all 0.2s;`;
     const card = `display:flex;flex-direction:column;background-color:${COLORS.grey};border-left:4px solid ${COLORS.green};padding:15px;margin-bottom:12px;border-radius:8px;color:${COLORS.white};`;
     const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
 
-    // ===== FILTRE IP =====
     function isPublicIP(ip) {
         if (!ip) return false;
         if (/^\d+\.\d+\.\d+\.\d+$/.test(ip)) {
@@ -110,7 +106,6 @@
     }
     function isIPv6(ip) { return ip && ip.includes(':'); }
 
-    // ===== HOOK WebRTC =====
     W.oRTCPeerConnection = W.oRTCPeerConnection || W.RTCPeerConnection;
     W.RTCPeerConnection = function (...a) {
         const pc = new W.oRTCPeerConnection(...a);
@@ -131,7 +126,6 @@
     };
     W.RTCPeerConnection.prototype = W.oRTCPeerConnection.prototype;
 
-    // ===== APIs =====
     const APIS = [
         // 1. ipwho.is — 1000 req/jour
         {
@@ -166,7 +160,6 @@
         }
     ];
 
-    // ===== GÉOMÉTRIE =====
     function haversine(lat1, lon1, lat2, lon2) {
         const R = 6371;
         const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -227,7 +220,6 @@
         return { lat: finalCenter.lat, lon: finalCenter.lon, confidence, spread: Math.round(spread), sources: cleaned.length, discarded: pts.length - cleaned.length };
     }
 
-    // ===== CORE =====
     async function onIP(ip) {
         if (!isPublicIP(ip)) return;
 
@@ -357,7 +349,6 @@
         });
     }
 
-    // ===== RENDER =====
     function render() {
         const el = document.getElementById('ip-addresses');
         if (!el) return;
@@ -484,7 +475,6 @@
         }
     }
 
-    // ===== INIT UI =====
     function initUI() {
         container = Object.assign(document.createElement('div'), {
             id: 'ip-container',
