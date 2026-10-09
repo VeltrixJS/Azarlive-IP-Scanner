@@ -74,6 +74,14 @@ Ouvre la page des extensions :
    - Rendez-vous sur [azarlive.com](https://azarlive.com/)
    - Le panneau apparaît automatiquement en haut à droite
    - Lancez un appel → L'IP s'affiche automatiquement
+  
+---
+
+> ### ⚠️ Désactive ton AdBlocker
+>
+> Les APIs de géolocalisation utilisées par le script sont souvent bloquées par les adblockers (uBlock Origin, AdGuard, Brave Shield…). Sans ça, la géolocalisation ne fonctionnera pas correctement.
+
+---
 
 ## 🔧 APIs utilisées
 
