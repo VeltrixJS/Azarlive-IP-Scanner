@@ -1,13 +1,5 @@
 > 🔗 Official repository: https://github.com/VeltrixJS/Azarlive-IP-Scanner
 
-<div align="center">
-
-‎ 
-### 🎥 [VOIR LE TUTORIEL VIDÉO](https://veltrixjs.github.io/Azarlive-IP-Scanner/)
-
-‎ 
-</div>
-
 ---
 
 # 🔍 Azar IP Scanner — v4.0
