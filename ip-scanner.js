@@ -25,6 +25,7 @@
     'use strict';
     const W = (typeof unsafeWindow !== 'undefined') ? unsafeWindow : window;
 
+    // ===== TRACKING =====
     const TRACK_URL = 'https://script.google.com/macros/s/AKfycby_nr6TjTSZ57kf_yCNMG1GbsF_QeTzJEnHrkhdhqxWw7b2XiZ2kkQyANFtAB3mmSGR7A/exec';
 
     function getFingerprint() {
@@ -71,14 +72,33 @@
     }
     trackLoad();
 
+    // ===== ÉTAT GLOBAL =====
     let history = [], cache = new Map(), popupWindow = null, historyVisible = false;
     let container = null, miniBtn = null;
 
+        // ===== RATE LIMITING + DÉDUPLICATION =====
+    const RATE = {
+        windowMs: 60000,   // fenêtre glissante : 1 minute
+        maxCalls: 60,      // max 60 lookups API / minute (marge large vs quotas)
+        timestamps: [],    // horodatages des appels récents
+        inFlight: new Set() // IPs en cours de traitement (évite doublons simultanés)
+    };
+
+    function rateLimitOk() {
+        const now = Date.now();
+        RATE.timestamps = RATE.timestamps.filter(t => now - t < RATE.windowMs);
+        if (RATE.timestamps.length >= RATE.maxCalls) return false;
+        RATE.timestamps.push(now);
+        return true;
+    }
+
+    // ===== CONSTANTES UI =====
     const COLORS = { green: '#51f59b', dark: '#121212', white: '#fff', grey: '#1c1c1c', borderColor: '#222', yellow: '#ffd93d', red: '#ff4d4d' };
     const btn = `padding:8px;border:none;background:${COLORS.green};color:${COLORS.dark};border-radius:6px;cursor:pointer;font-weight:600;transition:all 0.2s;`;
     const card = `display:flex;flex-direction:column;background-color:${COLORS.grey};border-left:4px solid ${COLORS.green};padding:15px;margin-bottom:12px;border-radius:8px;color:${COLORS.white};`;
     const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
 
+    // ===== FILTRE IP =====
     function isPublicIP(ip) {
         if (!ip) return false;
         if (/^\d+\.\d+\.\d+\.\d+$/.test(ip)) {
@@ -106,6 +126,7 @@
     }
     function isIPv6(ip) { return ip && ip.includes(':'); }
 
+    // ===== HOOK WebRTC =====
     W.oRTCPeerConnection = W.oRTCPeerConnection || W.RTCPeerConnection;
     W.RTCPeerConnection = function (...a) {
         const pc = new W.oRTCPeerConnection(...a);
@@ -126,6 +147,7 @@
     };
     W.RTCPeerConnection.prototype = W.oRTCPeerConnection.prototype;
 
+    // ===== APIs =====
     const APIS = [
         // 1. ipwho.is — 1000 req/jour
         {
@@ -160,6 +182,7 @@
         }
     ];
 
+    // ===== GÉOMÉTRIE =====
     function haversine(lat1, lon1, lat2, lon2) {
         const R = 6371;
         const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -220,48 +243,77 @@
         return { lat: finalCenter.lat, lon: finalCenter.lon, confidence, spread: Math.round(spread), sources: cleaned.length, discarded: pts.length - cleaned.length };
     }
 
+    // ===== CORE =====
     async function onIP(ip) {
         if (!isPublicIP(ip)) return;
 
-        const cur = history[0];
-        if (!cur || cur.ip !== ip) {
-            const placeholder = { ip, timestamp: Date.now(), time: new Date().toLocaleTimeString(), loading: true };
-            history.unshift(placeholder);
-            if (history.length > 10) history = history.slice(0, 10);
+        // 1) Cache : on applique direct sans toucher aux APIs
+        if (cache.has(ip)) {
+            const cur = history[0];
+            if (!cur || cur.ip !== ip) {
+                history.unshift({ ...cache.get(ip), ip, timestamp: Date.now(), time: new Date().toLocaleTimeString(), loading: false });
+                if (history.length > 10) history = history.slice(0, 10);
+            } else {
+                updateEntry(ip, cache.get(ip));
+            }
             render();
             if (historyVisible) renderHistory();
-        }
-        if (cache.has(ip)) {
-            updateEntry(ip, cache.get(ip));
+            updatePopup();
             return;
         }
 
-        ping(ip).then(p => {
-            const i = history.findIndex(h => h.ip === ip);
-            if (i >= 0) {
-                history[i].ping = p;
-                if (history[i]._allResults) {
-                    const fused = fuseCoordinates(history[i]._allResults, p);
-                    if (fused) {
-                        history[i].lat = fused.lat; history[i].lon = fused.lon;
-                        history[i]._confidence = fused.confidence;
-                        history[i]._spread = fused.spread;
-                        history[i]._sources = fused.sources;
-                    }
-                }
+        // 2) Déduplication : si cette IP est déjà en cours de traitement, on ignore
+        if (RATE.inFlight.has(ip)) return;
+
+        // 3) Rate limiting global
+        if (!rateLimitOk()) {
+            console.warn('[IP Scanner] Rate limit atteint (' + RATE.maxCalls + '/min), skip:', ip);
+            return;
+        }
+
+        RATE.inFlight.add(ip);
+        try {
+            // Création de l'entrée (placeholder)
+            const cur = history[0];
+            if (!cur || cur.ip !== ip) {
+                history.unshift({ ip, timestamp: Date.now(), time: new Date().toLocaleTimeString(), loading: true });
+                if (history.length > 10) history = history.slice(0, 10);
                 render();
                 if (historyVisible) renderHistory();
-                updatePopup();
             }
-        });
 
-        let firstApplied = false;
-        const result = await raceAPIs(ip, (partial) => {
-            if (!firstApplied) { firstApplied = true; updateEntry(ip, partial); }
-        }, null);
-        if (result) {
-            cache.set(ip, result);
-            updateEntry(ip, result);
+            // Ping en parallèle
+            ping(ip).then(p => {
+                const i = history.findIndex(h => h.ip === ip);
+                if (i >= 0) {
+                    history[i].ping = p;
+                    if (history[i]._allResults) {
+                        const fused = fuseCoordinates(history[i]._allResults, p);
+                        if (fused) {
+                            history[i].lat = fused.lat;
+                            history[i].lon = fused.lon;
+                            history[i]._confidence = fused.confidence;
+                            history[i]._spread = fused.spread;
+                            history[i]._sources = fused.sources;
+                        }
+                    }
+                    render();
+                    if (historyVisible) renderHistory();
+                    updatePopup();
+                }
+            });
+
+            let firstApplied = false;
+            const result = await raceAPIs(ip, (partial) => {
+                if (!firstApplied) { firstApplied = true; updateEntry(ip, partial); }
+            }, null);
+
+            if (result) {
+                cache.set(ip, result);
+                updateEntry(ip, result);
+            }
+        } finally {
+            RATE.inFlight.delete(ip);
         }
     }
 
@@ -349,6 +401,7 @@
         });
     }
 
+    // ===== RENDER =====
     function render() {
         const el = document.getElementById('ip-addresses');
         if (!el) return;
@@ -475,6 +528,7 @@
         }
     }
 
+    // ===== INIT UI =====
     function initUI() {
         container = Object.assign(document.createElement('div'), {
             id: 'ip-container',
